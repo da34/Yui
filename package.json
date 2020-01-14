@@ -1,0 +1,15 @@
+{
+  "name": "yujie",
+  "version": "1.0.0",
+  "description": "一个原生js实现的组件库",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "原生",
+    "js"
+  ],
+  "author": "YuJie",
+  "license": "ISC"
+}
