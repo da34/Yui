@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Message</title>
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1616345_7bj79cywtt4.css">
+    <style>
+        .container {
+            width: 800px;
+            margin: 100PX auto 0;
+            box-shadow: 0 0 4px 1px rgba(232, 237, 250, .5);
+            padding: 24px;
+            border: 1px solid #ebebeb;
+            border-radius: 3px;
+        }
+        .button {
+            padding: 12px 20px;
+            line-height: 1;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+            background: #fff;
+            color: #606266;
+            cursor: pointer;
+            font-weight: 500;
+            outline: none;
+            transition: .1s;
+        }
+        .button:hover {
+            border: 1px solid #409eff;
+        }
+        .message {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            border-radius: 4px;
+            border: 1px solid #ebeef5;
+            background-color: #ebeef5;
+            color: #909399;
+            display: flex;
+            align-items: center;
+            justify-content: left;
+            transform: translate(-50%, 0);
+            opacity: 0;
+            transition: .3s;
+            padding: 15px 15px 15px 20px;
+            min-width: 380px;
+        }
+        .message__icon {
+            margin-right: 10px;
+        }
+        .message.show {
+            top: 20px;
+            opacity: 1;
+        }
+        .message--success {
+            background-color: #f0f9eb;
+            border-color: #e1f3d8;
+            color: #67C23A;
+        }
+        .message--warning {
+            background-color: #fdf6ec;
+            border-color: #faecd8;
+            color: #E6A23C;
+        }
+        .message--error {
+            background-color: #fef0f0;
+            border-color: #fde2e2;
+            color: #F56C6C;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Message</h2>
+        <button id="buuton-success" class="button" onclick="">成功</button>
+        <button id="buuton-warning" class="button">警告</button>
+        <button id="buuton-info" class="button">消息</button>
+        <button id="buuton-error" class="button">错误</button>
+    </div>
+    <script>
+        class Message {
+            constructor({type = 'success', text = '', duration = 2000}) {
+                this.type = type
+                this.text = text
+                this.duration = duration
+                this.render()
+                this.bind()
+            }
+            render() {
+                const $div = document.createElement('div')
+                const $i = document.createElement('i')
+                this.$message = $div
+                const $text = document.createTextNode(this.text)
+                $div.classList.add('message', 'message--' + this.type)
+                $i.classList.add('iconfont','message__icon', 'icon-' + this.type)
+                $div.appendChild($i)
+                $div.appendChild($text)
+                document.body.appendChild($div)
+            }
+            bind() {
+                setTimeout(() => this.show(), 0) 
+                setTimeout(() => this.destory(), this.duration)
+            }
+            show() {
+                this.$message.classList.add('show')
+            }
+            destory() {
+                this.$message.classList.remove('show')
+                setTimeout(() => this.$message.parentNode.removeChild(this.$message), 400)
+            }
+        }
+                  
+        document.getElementById('buuton-success').onclick = function () {
+            new Message({ text: '成功' })
+        }
+        document.getElementById('buuton-warning').onclick = function () {
+            new Message({ type: 'warning', text: '警告' })
+        }
+        document.getElementById('buuton-info').onclick = function () {
+            new Message({ type: 'info',text: '信息' })
+        }
+        document.getElementById('buuton-error').onclick = function () {
+            new Message({ type: 'error',text: '错误' })
+        }
+    </script>
+</body>
+</html>
