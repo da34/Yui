@@ -4,8 +4,8 @@
 > 目前计划
 * [x] Tabs
 * [x] Collapse
-* [ ] Message
-* [ ] Tooltip
+* [x] Message
+* [x] Tooltip
 * [ ] Dialog
 * [ ] Carousel
 
