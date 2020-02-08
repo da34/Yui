@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Message</title>
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1616345_0cfsyvveggbc.css">
+    <style>
+        .container {
+            width: 800px;
+            margin: 100PX auto 0;
+            box-shadow: 0 0 4px 1px rgba(232, 237, 250, .5);
+            padding: 24px;
+            border: 1px solid #ebebeb;
+            border-radius: 3px;
+        }
+
+        li {
+            list-style: none;
+        }
+
+        .carousel {
+            position: relative;
+            text-align: center;
+            height: 300px;
+            overflow: hidden;
+        }
+        .panels > a {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #d3dce6;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 18px;
+            opacity: 0;
+            z-index: 0;
+            transition: .45s;
+        }
+        .panels > a:nth-child(2) {
+            background-color: pink;
+        }
+
+        .panels > a:nth-child(3) {
+            background-color: burlywood;
+        }
+
+        .panels > a:nth-child(4) {
+            background-color: lightblue;
+        }
+
+        .panels > a.active {
+            opacity: 1;
+            z-index: 1;
+        }
+        .carousel:hover .arrow i:nth-child(odd) {
+            left: 15px;
+            opacity: 1;
+        }
+        .carousel:hover .arrow i:nth-child(even) {
+            right: 15px;
+            opacity: 1;
+        }
+        .arrow > i {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(31, 45, 61, .1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 12px;
+            cursor: pointer;
+            transition: .3s;
+            opacity: 0;
+            z-index: 99;
+        }
+        .arrow  > i:hover {
+            background-color: rgba(31, 45, 61, .2);
+        }
+        .arrow i:nth-child(1) {
+            left: -20px;
+        }
+        .arrow i:nth-child(2) {
+            right: -20px;
+        }
+        .indicators {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 99;
+        }
+        .indicators li {
+            display: inline-block;
+            padding: 12px 4px;
+        }
+        .indicators li > button {
+            background-color: #fff;
+            height: 3px;
+            width: 30px;
+            border: 0;
+            outline: none;
+            cursor: pointer;
+            transition: .3s;
+            opacity: .58;
+        }
+        .indicators li > button.active {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Carousel</h2>
+        <div class="carousel">
+            <div class="panels">
+                <a class="active" href="#">1</a>
+                <a href="#">2</a>
+                <a href="#">3</a>
+                <a href="#">4</a>
+            </div>
+            <div class="arrow">
+                <i class="iconfont icon-arrow-left"></i>
+                <i class="iconfont icon-arrow-right"></i>
+            </div>
+            <ul class="indicators">
+                <li class="active">
+                    <button></button>
+                </li>
+                <li>
+                    <button></button>
+                </li>
+                <li>
+                    <button></button>
+                </li>
+                <li>
+                    <button></button>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <script>
+
+
+        const $ = el => document.querySelector(el)
+        const $$ = el => document.querySelectorAll(el)
+
+        const $$panels = $$('.carousel .panels a')
+        const $next = $('.arrow .icon-arrow-right')
+        const $pre = $('.arrow .icon-arrow-left')
+        const $$indicators = $$('.indicators li button')
+
+
+        const getIndex = () => [...$$panels].indexOf($('.carousel .panels a.active'))
+        const getPreIndex = () => (getIndex() - 1 + $$panels.length) % $$panels.length
+        const getNextIndex = () => (getIndex() + 1) % $$panels.length
+
+        const setPage = index => {
+            $$panels.forEach($panels => $panels.classList.remove('active'))
+            $$panels[index].classList.add('active')
+        }
+        const setIndicator = index => {
+            $$indicators.forEach($indicator => $indicator.classList.remove('active'))
+            $$indicators[index].classList.add('active')
+        }
+
+        $next.onclick = function () {
+            let index = getNextIndex()
+            setPage(index)
+            setIndicator(index)
+        } 
+        
+        $pre.onclick = function () {
+            let index = getPreIndex()
+            setPage(index)
+            setIndicator(index)
+        }
+
+        $$indicators.forEach($indicator => $indicator.onclick = function (e) {
+            let index = [...$$indicators].indexOf(e.target)
+            // console.log(index)
+            setPage(index)
+            setIndicator(index)
+        })
+    </script>
+</body>
+
+</html>
