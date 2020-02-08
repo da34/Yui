@@ -6,7 +6,7 @@
 * [x] Collapse
 * [x] Message
 * [x] Tooltip
-* [ ] Dialog
-* [ ] Carousel
+* [x] Dialog
+* [x] Carousel
 
 **正在完善...**
