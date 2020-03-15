@@ -27,6 +27,7 @@
             height: 300px;
             overflow: hidden;
         }
+
         .panels > a {
             position: absolute;
             width: 100%;
@@ -39,10 +40,11 @@
             text-decoration: none;
             font-weight: 500;
             font-size: 18px;
-            opacity: 0;
-            z-index: 0;
-            transition: .45s;
         }
+        .panels > a.active {
+            z-index: 10;
+        }
+
         .panels > a:nth-child(2) {
             background-color: pink;
         }
@@ -56,17 +58,19 @@
         }
 
         .panels > a.active {
-            opacity: 1;
-            z-index: 1;
+            z-index: 10;
         }
+
         .carousel:hover .arrow i:nth-child(odd) {
             left: 15px;
             opacity: 1;
         }
+
         .carousel:hover .arrow i:nth-child(even) {
             right: 15px;
             opacity: 1;
         }
+
         .arrow > i {
             position: absolute;
             top: 50%;
@@ -85,15 +89,19 @@
             opacity: 0;
             z-index: 99;
         }
-        .arrow  > i:hover {
+
+        .arrow > i:hover {
             background-color: rgba(31, 45, 61, .2);
         }
+
         .arrow i:nth-child(1) {
             left: -20px;
         }
+
         .arrow i:nth-child(2) {
             right: -20px;
         }
+
         .indicators {
             position: absolute;
             bottom: 0;
@@ -101,10 +109,13 @@
             transform: translateX(-50%);
             z-index: 99;
         }
+
         .indicators li {
             display: inline-block;
             padding: 12px 4px;
+            cursor: pointer;
         }
+
         .indicators li > button {
             background-color: #fff;
             height: 3px;
@@ -115,86 +126,190 @@
             transition: .3s;
             opacity: .58;
         }
-        .indicators li > button.active {
+
+        .indicators li.active > button {
             opacity: 1;
+            transform: scale();
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h2>Carousel</h2>
-        <div class="carousel">
-            <div class="panels">
-                <a class="active" href="#">1</a>
-                <a href="#">2</a>
-                <a href="#">3</a>
-                <a href="#">4</a>
-            </div>
-            <div class="arrow">
-                <i class="iconfont icon-arrow-left"></i>
-                <i class="iconfont icon-arrow-right"></i>
-            </div>
-            <ul class="indicators">
-                <li class="active">
-                    <button></button>
-                </li>
-                <li>
-                    <button></button>
-                </li>
-                <li>
-                    <button></button>
-                </li>
-                <li>
-                    <button></button>
-                </li>
-            </ul>
+<div class="container">
+    <h2>Carousel</h2>
+    <div class="carousel">
+        <div class="panels">
+            <a class="active" href="#">1</a>
+            <a href="#">2</a>
+            <a href="#">3</a>
+            <a href="#">4</a>
         </div>
+        <div class="arrow">
+            <i class="iconfont icon-arrow-left"></i>
+            <i class="iconfont icon-arrow-right"></i>
+        </div>
+        <ul class="indicators">
+            <li class="active">
+                <button></button>
+            </li>
+            <li>
+                <button></button>
+            </li>
+            <li>
+                <button></button>
+            </li>
+            <li>
+                <button></button>
+            </li>
+        </ul>
     </div>
-    <script>
+</div>
+<script>
 
-
-        const $ = el => document.querySelector(el)
-        const $$ = el => document.querySelectorAll(el)
-
-        const $$panels = $$('.carousel .panels a')
-        const $next = $('.arrow .icon-arrow-right')
-        const $pre = $('.arrow .icon-arrow-left')
-        const $$indicators = $$('.indicators li button')
-
-
-        const getIndex = () => [...$$panels].indexOf($('.carousel .panels a.active'))
-        const getPreIndex = () => (getIndex() - 1 + $$panels.length) % $$panels.length
-        const getNextIndex = () => (getIndex() + 1) % $$panels.length
-
-        const setPage = index => {
-            $$panels.forEach($panels => $panels.classList.remove('active'))
-            $$panels[index].classList.add('active')
+    const css = ($node, cssObj) => Object.assign($node.style, cssObj)
+    const animation = {
+        slice($from, $to, direction) {
+            console.log('slice', arguments)
+            $from.style = ''
+            $to.style = ''
+            css($from, {
+                transform: `translateX(0)`
+            })
+            css($to, {
+                transform: `translateX(${direction === 'right' ? '-' : ''}100%)`
+            })
+            setTimeout(() => css($from, {
+                transform: `translateX(${direction === 'left' ? '-' : ''}100%)`,
+                transition: `.4s`,
+                zIndex: 10
+            }))
+            setTimeout(() => css($to, {
+                transform: `translateX(0)`,
+                transition: `.4s`,
+                zIndex: 10
+            }))
+        },
+        zoom($from, $to) {
+            console.log('zoom', arguments)
+            $from.style = ''
+            $to.style = ''
+            css($from, {
+                transform: `scale(1)`
+            })
+            css($to, {
+                transform: `scale(0)`
+            })
+            setTimeout(() => css($from, {
+                transform: `scale(0)`,
+                transition: `.4s`,
+                zIndex: 10
+            }))
+            setTimeout(() => css($to, {
+                transform: `scale(1)`,
+                transition: `.4s`,
+                zIndex: 10
+            }))
+        },
+        vertical($from, $to, direction) {
+            console.log('vertical', arguments)
+            $from.style = ''
+            $to.style = ''
+            css($from, {
+                transform: `translateY(0)`
+            })
+            css($to, {
+                transform: `translateY(${direction === 'right' ? '-' : ''}100%)`
+            })
+            setTimeout(() => css($from, {
+                transform: `translateY(${direction === 'left' ? '-' : ''}100%)`,
+                transition: `.4s`,
+                zIndex: 10
+            }))
+            setTimeout(() => css($to, {
+                transform: `translateY(0)`,
+                transition: `.4s`,
+                zIndex: 10
+            }))
         }
-        const setIndicator = index => {
-            $$indicators.forEach($indicator => $indicator.classList.remove('active'))
-            $$indicators[index].classList.add('active')
+        // 需要动画特效在此添加即可
+    }
+
+    class Carousel {
+        /**
+         * $root [Node] 轮播组件的父节点
+         * mode [String] 动画效果  可选slice-zoom
+         * duration [Number] 动画运动时长 *未实现
+         * */
+        constructor($root, mode, duration) {
+            this.$root = $root;
+            this.$$panels = $root.querySelectorAll('.panels a');
+            this.$next = $root.querySelector('.arrow .icon-arrow-right');
+            this.$pre = $root.querySelector('.arrow .icon-arrow-left');
+            this.$$indicators = $root.querySelectorAll('.indicators li');
+            // 动画效果
+            this.mode = mode
+            // 绑定事件
+            this.bind();
         }
 
-        $next.onclick = function () {
-            let index = getNextIndex()
-            setPage(index)
-            setIndicator(index)
-        } 
-        
-        $pre.onclick = function () {
-            let index = getPreIndex()
-            setPage(index)
-            setIndicator(index)
+        bind() {
+            this.$next.onclick = this.nextPageHandel.bind(this);
+            this.$pre.onclick = this.prePageHandel.bind(this);
+            this.$$indicators.forEach($indicator => $indicator.onclick = this.indicatorsPageHandel.bind(this))
         }
 
-        $$indicators.forEach($indicator => $indicator.onclick = function (e) {
-            let index = [...$$indicators].indexOf(e.target)
-            // console.log(index)
-            setPage(index)
-            setIndicator(index)
-        })
-    </script>
+        getIndex() {
+            return [...this.$$indicators].indexOf(this.$root.querySelector('.indicators li.active'))
+        }
+
+        getPreIndex() {
+            return (this.getIndex() - 1 + this.$$panels.length) % this.$$panels.length
+        }
+
+        getNextIndex() {
+            return (this.getIndex() + 1) % this.$$panels.length
+        }
+
+        setPage(fromIndex, toIndex, direction) {
+            const $fromNode = this.$$panels[fromIndex]
+            const $toNode = this.$$panels[toIndex]
+            animation[this.mode]($fromNode, $toNode, direction)
+        }
+
+        setActive(index) {
+            this.$$indicators.forEach($indicator => $indicator.classList.remove('active'))
+            this.$$indicators[index].classList.add('active')
+            this.$$panels.forEach($panel => $panel.classList.remove('active'))
+            this.$$panels[index].classList.add('active')
+        }
+
+        nextPageHandel() {
+            let toIndex = this.getNextIndex(),
+                fromIndex = this.getIndex()
+            this.setActive(toIndex)
+            this.setPage(fromIndex, toIndex, 'left');
+        }
+        prePageHandel() {
+            let toIndex = this.getPreIndex(),
+                fromIndex = this.getIndex()
+            this.setActive(toIndex)
+            this.setPage(fromIndex, toIndex, 'right');
+        }
+
+        indicatorsPageHandel(e) {
+            const $clickNode = e.target.nodeName === 'BUTTON' ? e.target.parentElement : e.target
+            let toIndex = [...this.$$indicators].indexOf($clickNode),
+                fromIndex = this.getIndex()
+            if(toIndex === fromIndex) return
+            const direction = fromIndex > toIndex ? 'right' : 'left'
+            this.setPage(fromIndex, toIndex, direction);
+            this.setActive(toIndex)
+        }
+    }
+
+    const $carousel = document.querySelector('.carousel');
+    new Carousel($carousel, 'vertical')
+</script>
 </body>
 
 </html>

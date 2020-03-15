@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Notification</title>
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1616345_0cfsyvveggbc.css">
+    <style>
+        .container {
+            width: 800px;
+            margin: 100PX auto 0;
+            box-shadow: 0 0 4px 1px rgba(232, 237, 250, .5);
+            padding: 24px;
+            border: 1px solid #ebebeb;
+            border-radius: 3px;
+        }
+
+        .button {
+            padding: 12px 20px;
+            line-height: 1;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+            background: #fff;
+            color: #606266;
+            cursor: pointer;
+            font-weight: 500;
+            outline: none;
+            transition: .1s;
+        }
+
+        .button:hover {
+            border: 1px solid #409eff;
+        }
+
+        .notification {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            display: flex;
+            width: 330px;
+            padding: 14px 26px 14px 13px;
+            border-radius: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ebeef5;
+            position: fixed;
+            background-color: #fff;
+            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+            transition: opacity .3s, transform .3s, left .3s, right .3s, top .4s, bottom .3s;
+            overflow: hidden;
+            transform: translateX(110%);
+            opacity: 0;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0%);
+        }
+        .notification .notification__group .title {
+            font-weight: 700;
+            font-size: 16px;
+            color: #303133;
+            margin: 0;
+        }
+        .notification__group {
+            margin-left: 13px;
+            margin-right: 8px;
+        }
+        .notification__group .content {
+            font-size: 14px;
+            line-height: 21px;
+            margin: 6px 0 0;
+            color: #606266;
+            text-align: justify;
+        }
+        .close {
+            position: absolute;
+            top: 18px;
+            right: 15px;
+            cursor: pointer;
+            color: #909399;
+            font-size: 16px;
+        }
+        .notification__icon{
+            height: 24px;
+            width: 24px;
+            font-size: 24px;
+         }
+        .success {
+            /* background-color: #f0f9eb; */
+            border-color: #e1f3d8;
+            color: #67C23A;
+        }
+        .warning {
+            /* background-color: #fdf6ec; */
+            border-color: #faecd8;
+            color: #E6A23C;
+        }
+        .error {
+            /* background-color: #fef0f0; */
+            border-color: #fde2e2;
+            color: #F56C6C;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Notification</h2>
+        <button id="buuton-success" class="button" onclick="">成功</button>
+        <button id="buuton-warning" class="button">警告</button>
+        <button id="buuton-info" class="button">消息</button>
+        <button id="buuton-error" class="button">错误</button>
+        <div class="notification">
+            <i class="notification__icon iconfont icon-success success"></i>
+            <div class="notification__group">
+                <h2 class="title">提示</h2>
+                <div class="content">这是一条不会自动关闭的消息</div>
+                <div class="iconfont icon-close close"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        class Notification {
+            // text = '', type = 'success', title = '提示', duration = 2000  默认
+            constructor(options) {
+                this.text = options.text || ''
+                this.type = options.type || 'success'
+                this.title = options.title || '提示'
+                this.duration = options.duration || 4500
+                this.closeCallBack = options.closeCallBack || function () {}
+                this.render()
+                this.bind()
+            }
+            render() {
+                let $notification = document.createElement('div'),
+                    $notification__icon = document.createElement('i'),
+                    $notification__group = document.createElement('div'),
+                    $title = document.createElement('div'),
+                    $content = document.createElement('div'),
+                    $close = document.createElement('div');
+
+                $notification.classList.add('notification')
+                $notification__icon.classList.add('notification__icon', 'iconfont', `icon-${this.type}`, `${this.type}`)
+                $notification__group.classList.add('notification__group')
+                $title.classList.add('title')
+                $content.classList.add('content')
+                $close.classList.add('close', 'iconfont', 'icon-close')
+
+                $title.innerHTML = this.title
+                $content.innerHTML = this.text
+                
+                $notification__group.appendChild($title)
+                $notification__group.appendChild($content)
+                $notification__group.appendChild($close)
+
+                $notification.appendChild($notification__icon)
+                $notification.appendChild($notification__group)
+
+                document.body.appendChild($notification)
+
+                this.$close = $close
+                this.$notification = $notification
+            }
+            bind() {
+                this.show()
+
+                const _this = this
+                let timer = 0
+                // 点击关闭回调
+                this.$close.onclick = function () {
+                    _this.destroy()
+                    _this.closeCallBack()
+                    clearTimeout(timer)
+                }
+
+                // 关闭通知
+                if (this.duration !== 0) {
+                    timer = setTimeout(() => this.destroy(), this.duration + 500)
+                }
+            }
+            show() {
+                this.$notification.classList.add('show')
+            }
+            destroy() {
+                this.$notification.classList.remove('show')
+                setTimeout(() => this.$notification.parentNode.removeChild(this.$notification), 0)
+            }
+        }
+
+        const str = `我是傻逼`
+        new Notification({ text: str, type: 'error' })
+        // new Notification({ text: str })
+
+    </script>
+</body>
+
+</html>
